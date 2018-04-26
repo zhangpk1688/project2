@@ -1,11 +1,13 @@
 # javascript event loop
 
-## 基本用法
-
+## javascript为什么是单线程的？
+  这个是与javascript 诞生之初的用途有关的，js本身是用来作为浏览器脚本语言的，主要用来浏览器端脚本的执行以及dom的操作，
+  如果多线程的话 同一个时刻对一个dom节点可能有多个操作，这样浏览器就不知道怎么办了。所以js只能是单线程的，即便html中添加了web worker也没改变起本质，
+  因为 web worker 是在主线程的控制之下 并且不能进行dom操作的。
 
 
 #### Koa2 启动脚本
-本文主要分析js引擎执行的第三个阶段–执行阶段，在分析之前我们先思考以下两个问题：
+
 
 js是单线程的，为了避免代码解析阻塞使用了异步执行，那么它的异步执行机制是怎么样的？
 
@@ -186,7 +188,8 @@ Promise.resolve().then(function() {
 console.log('script end');
 执行过程如下：
 
-代码块通过语法分析和预编译后，进入执行阶段，当JS引擎主线程执行到console.log('script start');，JS引擎主线程认为该任务是同步任务，所以立刻执行输出script start，然后继续向下执行；
+    代码块通过语法分析和预编译后，进入执行阶段，当JS引擎主线程执行到console.log('script start');，JS引擎主线程认为该任务是同步任务，
+ 所以立刻执行输出script start，然后继续向下执行；
 
 JS引擎主线程执行到setTimeout(function() { console.log('setTimeout'); }, 0);，JS引擎主线程认为setTimeout是异步任务API，则向浏览器内核进程申请开启定时器线程进行计时和控制该setTimeout任务。由于W3C在HTML标准中规定setTimeout低于4ms的时间间隔算为4ms，那么当计时到4ms时，定时器线程就把该回调处理函数推进任务队列中等待主线程执行，然后JS引擎主线程继续向下执行
 
@@ -206,4 +209,4 @@ promise1
 promise2
 setTimeout
 总结
-以上便是JS引擎执行的全部过程，JS引擎的执行过程其实并不复杂，只要多思考多研究就可以理解，理解该过程后可以在一定程度上提高对JS的认识
+           以上便是JS引擎执行的全部过程，JS引擎的执行过程其实并不复杂，只要多思考多研究就可以理解，理解该过程后可以在一定程度上提高对JS的认识
